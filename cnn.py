@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import torchvision 
 import torchvision.transforms as transforms 
 import torch.optim as optim
-import numpy as np 
 import wandb
 
 # load data (cifar10)
