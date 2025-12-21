@@ -4,6 +4,8 @@ import torch.nn.functional as F
 import torchvision 
 import torchvision.transforms as transforms 
 import torch.optim as optim
+import numpy as np 
+import wandb
 
 # load data (cifar10)
 transform = transforms.Compose(
@@ -80,6 +82,19 @@ optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
 num_epochs=10
 
+# initialize wandb 
+wandb.init(
+    project="graph-neural-operator",
+    name="simple-test",
+    config={
+        "epochs": num_epochs,
+        "batch_size": batch_size,
+        "lr": 0.001,
+        "momentum": 0.9
+    }
+)
+config = wandb.config 
+
 # loop epochs
 for epoch in range(1,num_epochs+1):
 
@@ -111,7 +126,10 @@ for epoch in range(1,num_epochs+1):
     
     # epoch loss 
     epoch_loss = (batch_loss / num_batches)
+    wandb.log({"epoch_loss": epoch_loss, "epoch": epoch})
     print(f"epoch {epoch} loss: {epoch_loss}")
+
+wandb.finish()
 
     
 
