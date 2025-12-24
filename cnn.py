@@ -6,6 +6,9 @@ import torchvision.transforms as transforms
 import torch.optim as optim
 import wandb
 
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+print("Using device: ", device)
+
 # load data (cifar10)
 transform = transforms.Compose(
     [transforms.ToTensor(),
@@ -68,7 +71,7 @@ class NN(nn.Module):
     
 
 
-model = NN()
+model = NN().to(device)
 
 # inputs = torch.rand(1,1,12,12)
 # out = model(inputs)
@@ -95,6 +98,7 @@ wandb.init(
 config = wandb.config 
 
 # loop epochs
+print('Starting training loop...')
 for epoch in range(1,num_epochs+1):
 
     epoch_loss = 0.0
@@ -102,10 +106,12 @@ for epoch in range(1,num_epochs+1):
     # loop batches 
     num_batches = len(trainloader)
     batch_loss = 0.0
-    for i, data in enumerate(trainloader):
+    for i, (inputs, labels) in enumerate(trainloader):
 
-        inputs, labels = data
+        # place data onto device
+        inputs, labels = inputs.to(device), labels.to(device)
 
+        # zero out optimizer 
         optimizer.zero_grad()
 
         # forward 
